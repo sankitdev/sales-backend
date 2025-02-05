@@ -1,13 +1,13 @@
 import easyinvoice from "easyinvoice";
 import fs from "fs";
 let data = {
-  apiKey: "free", // Please register to receive a production apiKey: https://app.budgetinvoice.com/register
-  mode: "development", // Production or development, defaults to production
+  apiKey: "", // Please register to receive a production apiKey: https://app.budgetinvoice.com/register
+  mode: "production", // Production or development, defaults to production
   images: {
     // The logo on top of your invoice
-    logo: "https://public.budgetinvoice.com/img/logo_en_original.png",
+    // logo: "https://public.budgetinvoice.com/img/logo_en_original.png",
     // The invoice background
-    background: "https://public.budgetinvoice.com/img/watermark-draft.jpg",
+    // background: "https://public.budgetinvoice.com/img/watermark-draft.jpg",
   },
   // Your own data
   sender: {

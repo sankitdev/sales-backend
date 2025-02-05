@@ -75,10 +75,8 @@ export const updateSale = async (req, res) => {
 
     const { name, image, email, phone, selectedProducts } = req.body;
 
-    // Get the previous products and quantities from the existing sale
     const previousSelectedProducts = isFound.selectedProducts;
 
-    // Calculate totalPrice and handle product quantity updates
     let totalPrice = 0;
     const updatedProductQuantities = [];
 
@@ -90,12 +88,9 @@ export const updateSale = async (req, res) => {
           .status(400)
           .json({ message: `Product with ID ${productId} not found` });
       }
-
       const previousProduct = previousSelectedProducts.find(
         (p) => p.productId.toString() === productId.toString()
       );
-
-      // Calculate the difference in quantities (current - previous)
       const quantityDifference =
         saleQuantity - (previousProduct ? previousProduct.quantity : 0);
 
@@ -108,15 +103,11 @@ export const updateSale = async (req, res) => {
       const price = product.price;
       const productTotalPrice = saleQuantity * price;
       totalPrice += productTotalPrice;
-
-      // Update the product quantity in stock based on the difference
       product.quantity -= quantityDifference;
       await product.save();
 
       updatedProductQuantities.push({ productId, quantity: saleQuantity });
     }
-
-    // Update the sale record with the new selected products and total price
     const updatedSale = await Sales.findByIdAndUpdate(
       id,
       {
