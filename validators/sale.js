@@ -10,22 +10,29 @@ export const validateSale = [
     .withMessage("Name should only contain alphabets and spaces")
     .trim(),
   body("image")
+    .optional()
     .isString()
-    .withMessage("The URL must point to an image (jpeg, jpg, png, gif,svg)."),
+    .withMessage("The URL must point to an image (jpeg, jpg, png, gif, svg)."),
   body("email").isEmail().withMessage("Invalid email"),
   body("phone")
     .isString()
     .isLength({ min: 10 })
     .withMessage("Phone is required"),
-  body("productName")
-    .isString()
-    .isLength({ min: 1 })
-    .withMessage("Product is required"),
-  body("quantity")
-    .isInt()
-    .isLength({ min: 1, max: 10 })
-    .withMessage("Enter valid quantity"),
-  body("price").isInt().withMessage("Price is required"),
+  body("selectedProducts")
+    .isArray({ min: 1 })
+    .withMessage("At least one product is required")
+    .custom((value) => {
+      return value.every(
+        (product) =>
+          product.productId &&
+          product.quantity &&
+          Number.isInteger(product.quantity) &&
+          product.quantity > 0
+      );
+    })
+    .withMessage(
+      "Each product must have a valid productId and quantity greater than 0"
+    ),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -45,18 +52,27 @@ export const validateUpdateSale = [
     .matches(/^[a-zA-Z\s]+$/)
     .withMessage("Name should only contain alphabets and spaces")
     .trim(),
-
-  body("product")
-    .isString()
+  body("phone")
     .optional()
-    .withMessage("The URL must point to an image (jpeg, jpg, png, gif,svg)."),
-
-  body("description")
     .isString()
+    .isLength({ min: 10 })
+    .withMessage("Phone is required"),
+  body("selectedProducts")
     .optional()
-    .isLength({ min: 5 })
-    .withMessage("Description is required"),
-  body("price").isInt().withMessage("Price is required"),
+    .isArray({ min: 1 })
+    .withMessage("At least one product is required")
+    .custom((value) => {
+      return value.every(
+        (product) =>
+          product.productId &&
+          product.quantity &&
+          Number.isInteger(product.quantity) &&
+          product.quantity > 0
+      );
+    })
+    .withMessage(
+      "Each product must have a valid productId and quantity greater than 0"
+    ),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
