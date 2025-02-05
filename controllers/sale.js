@@ -18,7 +18,10 @@ export const getSales = async (req, res) => {
 export const getSaleById = async (req, res) => {
   try {
     const { id } = req.params;
-    const products = await Sales.findById(id);
+    const products = await Sales.findById(id).populate({
+      path: "selectedProducts.productId",
+      select: "name price",
+    });
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -128,50 +131,6 @@ export const updateSale = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-// export const updateSale = async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const isFound = await Sales.findById(id);
-//     if (!isFound) {
-//       return res.status(400).json({ message: "Sale not found" });
-//     }
-//     const { name, image, email, phone, selectedProducts } = req.body;
-//     let totalPrice = 0;
-//     for (let i = 0; i < selectedProducts.length; i++) {
-//       const { productId, quantity: saleQuantity } = selectedProducts[i];
-//       const product = await Product.findById(productId);
-//       if (!product) {
-//         return res
-//           .status(400)
-//           .json({ message: `Product with ID ${productId} not found` });
-//       }
-//       if (product.quantity < saleQuantity) {
-//         return res.status(400).json({
-//           message: `Insufficient quantity for product ${product.name}`,
-//         });
-//       }
-//       const price = product.price;
-//       const productTotalPrice = saleQuantity * price;
-//       totalPrice += productTotalPrice;
-//       product.quantity -= saleQuantity;
-//       await product.save();
-//     }
-
-//     const updatedSale = await Sales.findByIdAndUpdate(
-//       id,
-//       { name, image, phone, email, selectedProducts, totalPrice },
-//       { new: true }
-//     );
-
-//     res
-//       .status(200)
-//       .json({ message: "Sales record updated successfully", updatedSale });
-//   } catch (error) {
-//     res.status(500).json({ error: error.message });
-//   }
-// };
-
 export const deleteSale = async (req, res) => {
   try {
     const { id } = req.params;
