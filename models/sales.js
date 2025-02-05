@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+
 const salesSchema = new mongoose.Schema(
   {
     name: {
@@ -27,16 +28,24 @@ const salesSchema = new mongoose.Schema(
       required: [true, "Phone Number required"],
       min: 10,
     },
-    productName: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-    },
-    quantity: {
-      type: Number,
-    },
-    price: {
-      type: Number,
-    },
+    selectedProducts: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: [true, "Product ID is required"],
+        },
+        quantity: {
+          type: Number,
+          required: [true, "Product quantity is required"],
+          min: 1,
+        },
+        price: {
+          type: Number,
+          // required: [true, "Product price is required"],
+        },
+      },
+    ],
     totalPrice: {
       type: Number,
     },
